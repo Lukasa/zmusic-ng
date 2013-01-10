@@ -1,6 +1,6 @@
 STYLES := bootstrap font-awesome page
 LIBS := jquery underscore backbone
-MODELS := Song SongList DownloadBasket
+MODELS := ReferenceCountedModel Song SongList DownloadBasket
 VIEWS := SongRow SongTable DownloadSelector
 CONTROLS := AudioPlayer
 APPS := app

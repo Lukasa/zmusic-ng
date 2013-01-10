@@ -1,4 +1,4 @@
-var Song = Backbone.Model.extend({
+var Song = ReferenceCountedModel.extend({
 	defaults: {
 		"title": "Untitled Track",
 		"artist": "",

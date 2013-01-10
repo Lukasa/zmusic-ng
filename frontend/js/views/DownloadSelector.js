@@ -1,7 +1,7 @@
 var DownloadSelector = Backbone.View.extend({
 	initialize: function() {
 		var that = this;
-		_(this).bindAll("add", "remove", "render", "inhibitedRender");
+		_(this).bindAll("render", "inhibitedRender");
 		this.inhibitRendering = false;
 		this.$table = this.$el.find("table");
 		this.$tableContainer = this.$el.find("#basket-container");
@@ -52,43 +52,30 @@ var DownloadSelector = Backbone.View.extend({
 			form.remove();
 			that.inhibitedRender(that.collection.emptyBasket)();
 		});
+		this.listenTo(this.collection, "reset", this.render);
+		this.listenTo(this.collection, "add", this.render);
+		this.listenTo(this.collection, "remove", this.render);
 		this.songRows = {};
-		this.listenTo(this.collection, "add", this.add);
-		this.listenTo(this.collection, "remove", this.remove);
-		this.listenTo(this.collection, "reset", this.reset);
-		this.collection.forEach(this.add);
-		this.render();
-	},
-	reset: function() {
-		var that = this;
-		var newSongRows = {}
-		this.collection.forEach(function(song) {
-			if (song.id in that.songRows && song === that.songRows[song.id].model)
-				newSongRows[song.id] = that.songRows[song.id];
-			else
-				newSongRows[song.id] = new SongRow({ model: song, download: true });
-		});
-		this.songRows = newSongRows;
-		this.render();
-	},
-	add: function(song) {
-		var row = new SongRow({ model: song, download: true });
-		this.songRows[song.id] = row;
-		this.render();
-	},
-	remove: function(song) {
-		var row = this.songRows[song.id];
-		delete this.songRows[song.id];
 		this.render();
 	},
 	render: function() {
 		if (this.inhibitRendering)
 			return;
+		
 		var that = this;
 		this.$table.empty();
-		this.collection.each(function(song) {
-			that.$table.append(that.songRows[song.id].render().el);
+
+		var newSongRows = {};
+		this.collection.forEach(function(song) {
+			var row;
+			if (song.id in that.songRows)
+				row = newSongRows[song.id] = that.songRows[song.id];
+			else
+				row = newSongRows[song.id] = new SongRow({ model: song, download: true });
+			that.$table.append(row.render().el);
 		});
+		this.songRows = newSongRows;
+
 		this.$basketCount.text(this.collection.length);
 		if (this.collection.length) {
 			this.$basketCaret.show();

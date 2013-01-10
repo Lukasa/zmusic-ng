@@ -134,6 +134,7 @@ AudioPlayer.prototype.playSong = function(song) {
 	this.stopSong();
 	song.set("playing", true);
 	this.playing = song;
+	this.playing.take();
 	this.setNowPlaying();
 	var sources = this.getSources(song.id, song.get("mimetype"));
 	for (var i = 0; i < sources.length; ++i)
@@ -203,6 +204,7 @@ AudioPlayer.prototype.playPauseSong = function() {
 AudioPlayer.prototype.stopSong = function() {
 	if (this.playing != null) {
 		this.playing.set("playing", false);
+		this.playing.put();
 		this.playing = null;
 	}
 	this.audio.pause();

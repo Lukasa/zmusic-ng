@@ -6,7 +6,7 @@ var SongTable = Backbone.View.extend({
 		this.$songlistContainer = this.$el.find("#songlist-container");
 		this.$tbody = this.$songlistContainer.find("tbody");
 		this.$songlistContainer.scroll(function() {
-			if (that.collection.hasMore() && this.scrollHeight - (this.scrollTop + this.clientHeight) < 1500)
+			if (that.collection.hasMore() && this.scrollHeight - (this.scrollTop + this.clientHeight) < 2000)
 				that.collection.more();
 		});
 		this.$searchProgress = this.$el.find("#search-progress");
