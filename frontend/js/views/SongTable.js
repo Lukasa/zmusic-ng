@@ -1,7 +1,7 @@
 var SongTable = Backbone.View.extend({
 	initialize: function() {
 		var that = this;
-		_(this).bindAll("add", "remove", "render", "renderMore");
+		_(this).bindAll("remove", "render", "renderMore", "appendSong");
 
 		this.$songlistContainer = this.$el.find("#songlist-container");
 		this.$tbody = this.$songlistContainer.find("tbody");
@@ -28,34 +28,31 @@ var SongTable = Backbone.View.extend({
 			latestSearchTimer = setTimeout(doSearch, 350);
 		});
 
-		this.listenTo(this.collection, "add", this.add);
 		this.listenTo(this.collection, "remove", this.remove);
 		this.listenTo(this.collection, "reset", this.render);
 		this.listenTo(this.collection, "more", this.renderMore);
 		this.render();
 	},
-	add: function(song) {
-		var row = new SongRow({ model: song });
-		this.songRows[song.id] = row;
-	},
 	remove: function(song) {
-		var row = this.songRows[song.id];
-		delete this.songRows[song.id];
+		if (song.id in this.songRows)
+			delete this.songRows[song.id];
 	},
-	appendSongs: function(songs) {
+	appendSong: function(song) {
 		var that = this;
-		songs.each(function(song) {
-			that.$tbody.append(that.songRows[song.id].render().el);
+		_.defer(function() {
+			var row;
+			if (!(song.id in that.songRows))
+				row = that.songRows[song.id] = new SongRow({ model: song });
+			that.$tbody.append(row.render().el);
 		});
 	},
 	render: function() {
 		this.$tbody.empty().scrollTop(0);
 		this.songRows = {};
-		this.collection.each(this.add);
-		this.appendSongs(this.collection);
+		this.collection.each(this.appendSong);
 		return this;
 	},
 	renderMore: function(more) {
-		this.appendSongs(more);
+		more.each(this.appendSong);
 	}
 });

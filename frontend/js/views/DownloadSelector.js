@@ -61,20 +61,8 @@ var DownloadSelector = Backbone.View.extend({
 	render: function() {
 		if (this.inhibitRendering)
 			return;
-		
-		var that = this;
-		this.$table.empty();
 
-		var newSongRows = {};
-		this.collection.forEach(function(song) {
-			var row;
-			if (song.id in that.songRows)
-				row = newSongRows[song.id] = that.songRows[song.id];
-			else
-				row = newSongRows[song.id] = new SongRow({ model: song, download: true });
-			that.$table.append(row.render().el);
-		});
-		this.songRows = newSongRows;
+		var that = this;
 
 		this.$basketCount.text(this.collection.length);
 		if (this.collection.length) {
@@ -86,6 +74,21 @@ var DownloadSelector = Backbone.View.extend({
 			this.$basketCount.removeClass("badge-info");
 			this.$basketCaret.hide();
 		}
+
+		this.$table.empty();
+		var newSongRows = {};
+		this.collection.forEach(function(song) {
+			var row = null;
+			if (song.id in that.songRows)
+				row = newSongRows[song.id] = that.songRows[song.id];
+			_.defer(function() {
+				if (row == null)
+					row = that.songRows[song.id] = new SongRow({ model: song, download: true });
+				that.$table.append(row.render().el);
+			});
+		});
+		this.songRows = newSongRows;
+
 		this.$tableContainer.width(this.$buttons.width());
 		return this;
 	},
