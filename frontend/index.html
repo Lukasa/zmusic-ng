@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--[if lt IE 9 ]><meta http-equiv="refresh" content="0;URL='http://google.com/chrome'"><![endif]-->
+<title>ZX2C4 Music</title>
+<meta charset="UTF-8">
+<script src="js/scripts.min.js" type="application/javascript"></script>
+<link rel="stylesheet" type="text/css" href="css/styles.min.css">
+</head>
+<body>
+
+<div id="search" class="input-prepend input-thick">
+	<span class="add-on"><i id="search-progress" class="icon-search"></i></span>
+	<input type="text" id="query">
+</div>
+<div id="songlist-container">
+	<table class="table table-striped table-hover table-condensed">
+		<thead><tr><th>#</th><th>Title</th><th>Album</th><th>Artist</th><th></th></tr></thead>
+		<tbody class="selectable"></tbody>
+	</table>
+</div>
+<div id="controls">
+	<div class="current-track"></div>
+	<div class="btn-group">
+		<a class="btn play-pause" href="#"><i class="icon-play"></i></a>
+		<a class="btn stop" href="#"><i class="icon-stop"></i></a>
+		<div class="progress progress-striped btn-progress">
+			<div class="bar"></div>
+		</div>
+		<a class="btn prev" href="#"><i class="icon-step-backward"></i></a>
+		<a class="btn next" href="#"><i class="icon-step-forward"></i></a>
+	</div>
+</div>
+<div id="basket">
+	<div class="btn-group">
+		<a class="btn show-basket"><span class="badge basket-count">0</span> <i class="icon-caret-down"></i></a>
+		<a class="btn fill-basket"><i class="icon-plus"></i> Add Entire List to Basket</i></a>
+		<a class="btn download-basket"><i class="icon-cloud-download"></i> Download Basket</a>
+		<a class="btn empty-basket"><i class="icon-remove"></i> Empty Basket</a>
+	</div>
+	<div id="basket-container">
+		<table class="table table-striped table-condensed"></table>
+	</div>
+</div>
+<div id="login">
+	<form class="form-vertical">
+		<fieldset>
+			<legend>Login</legend>
+			<div class="control-group">
+				<div class="controls">
+					<div class="input-prepend">
+						<span class="add-on"><i class="icon-user"></i></span>
+						<input type="text" name="username" placeholder="Username">
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<div class="input-prepend">
+						<span class="add-on"><i class="icon-key"></i></span>
+						<input type="password" name="password" placeholder="Password">
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<button type="submit" class="btn btn-primary"><i class="icon-signin"></i> Login</button>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+<div id="loading"><i class="icon-cog icon-spin"></i></div> 
+
+</body>
+</html>
