@@ -13,24 +13,12 @@ def scan_music():
 	def do_scan():
 		yield "%i | Begin.\n" % int(time.time())
 		all_files = {}
-		excludes = [os.path.join(app.config["MUSIC_PATH"], item) for item in app.config["EXCLUDE_PATHS"]]
 		for root, dirs, files in os.walk(app.config["MUSIC_PATH"]):
 			if len(files) != 0:
 				yield "%i | Scanning [%s].\n" % (int(time.time()), root)
 			for name in files:
 				name = os.path.join(root, name)
-
-				skip = False
-				for exclude in excludes:
-					if name.find(exclude) == 0:
-						skip = True
-						break
-				if skip:
-					yield "%i | Excluded [%s].\n" % (int(time.time()), name)
-					continue
-
 				all_files[name] = True
-
 				song = Song.query.get(name)
 				if song != None:
 					stat = os.stat(name)
