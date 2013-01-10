@@ -10,7 +10,7 @@ $(function() {
 
 		var audioPlayer = new AudioPlayer($("#controls"));
 		var songList = new SongList([], audioPlayer);
-		new SongTable({
+		var songTable = new SongTable({
 			el: $(document.body),
 			collection: songList
 		});
@@ -24,11 +24,13 @@ $(function() {
 		if (!isNaN(song) && song > 0) {
 			songList.once("sync", function() {
 				var loadSong = function() {
-					if (song <= songList.length)
-						audioPlayer.playSong(songList.models[song - 1]);
+					if (song > songList.length)
+						return;
+					audioPlayer.playSong(songList.models[song - 1]);
+					songTable.scrollTo(songList.models[song - 1]);
 				};
 				if (song > songList.length && songList.hasMore())
-					songList.more({ success: loadSong, limit: song - songList.length });
+					songList.more({ success: loadSong, limit: songList.options.limit * Math.ceil((song - songList.length) / songList.options.limit) });
 				else
 					loadSong();
 			});

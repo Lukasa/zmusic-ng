@@ -54,5 +54,16 @@ var SongTable = Backbone.View.extend({
 	},
 	renderMore: function(more) {
 		more.each(this.appendSong);
+	},
+	scrollTo: function(song) {
+		var that = this;
+		_.defer(function() {
+			if (!(song.id in that.songRows))
+				return;
+			var offset = that.songRows[song.id].$el.offset().top;
+			if (that.$songlistContainer.scrollTop() + that.$songlistContainer.height() >= offset)
+				return;
+			that.$songlistContainer.scrollTop(offset - that.$songlistContainer.height() / 2);
+		});
 	}
 });
