@@ -18,9 +18,19 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import wave
+import os
 from zmusic.picard.file import File
 from zmusic.picard.metadata import Metadata
 from zmusic.picard.util import encode_filename
+
+class WaveInfo(object):
+    def __init__(self, file):
+        self.length = 1000 * file.getnframes() / file.getframerate()
+
+class Wave(object):
+    def __init__(self, file):
+        self.mime = "audio/wav"
+        self.info = WaveInfo(file)
 
 class WAVFile(File):
     EXTENSIONS = [".wav"]
@@ -35,7 +45,15 @@ class WAVFile(File):
         metadata['~#sample_rate'] = f.getframerate()
         metadata.length = 1000 * f.getnframes() / f.getframerate()
         metadata['~format'] = 'Microsoft WAVE'
-        self._add_path_to_metadata(metadata)
+
+        file = Wave(f)
+
+        self._info(metadata, file)
+
+        metadata["title"] = os.path.splitext(os.path.basename(filename))[0]
+        metadata["album"] = ''
+        metadata["artist"] = ''
+
         return metadata
 
     def _save(self, filename, metadata, settings):
