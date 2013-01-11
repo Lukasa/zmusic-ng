@@ -2,15 +2,24 @@ from zmusic import db
 from uuid import uuid4
 import time
 
+# This is indeed ugly, but it was suggested by the SQLAlchemy documention
+# verbatim as a way of dealing with str-centric apps.
+class CoerceUTF8(db.TypeDecorator):
+	impl = db.Unicode
+	def process_bind_param(self, value, dialect):
+		if isinstance(value, str):
+			value = value.decode('utf-8')
+		return value
+
 class Song(db.Model):
 	__tablename__ = 'songs'
 
-	filename = db.Column(db.String, primary_key=True)
-	id = db.Column(db.String, nullable=False, index=True)
-	title = db.Column(db.String)
-	album = db.Column(db.String)
-	artist = db.Column(db.String)
-	mimetype = db.Column(db.String)
+	filename = db.Column(CoerceUTF8, primary_key=True)
+	id = db.Column(CoerceUTF8, nullable=False, index=True)
+	title = db.Column(CoerceUTF8)
+	album = db.Column(CoerceUTF8)
+	artist = db.Column(CoerceUTF8)
+	mimetype = db.Column(CoerceUTF8)
 	year = db.Column(db.Integer)
 	track = db.Column(db.Integer)
 	disc = db.Column(db.Integer)
@@ -49,15 +58,15 @@ class Song(db.Model):
 class Download(db.Model):
 	__tablename__ = 'downloads'
 	
-	id = db.Column(db.String, primary_key=True)
-	leader_id = db.Column(db.String)
+	id = db.Column(CoerceUTF8, primary_key=True)
+	leader_id = db.Column(CoerceUTF8)
 	time = db.Column(db.Integer)
-	ip = db.Column(db.String, index=True)
-	useragent = db.Column(db.String)
-	song_id = db.Column(db.String, db.ForeignKey(Song.id))
-	artist = db.Column(db.String)
-	album = db.Column(db.String)
-	title = db.Column(db.String)
+	ip = db.Column(CoerceUTF8, index=True)
+	useragent = db.Column(CoerceUTF8)
+	song_id = db.Column(CoerceUTF8, db.ForeignKey(Song.id))
+	artist = db.Column(CoerceUTF8)
+	album = db.Column(CoerceUTF8)
+	title = db.Column(CoerceUTF8)
 	is_zip = db.Column(db.Boolean)
 
 	def __init__(self, song, request):

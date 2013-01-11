@@ -26,7 +26,10 @@ def scan_music():
 						continue
 				else:
 					song = Song()
-				tags = readtags(name)
+				try:
+					tags = readtags(name)
+				except:
+					tags = None
 				if tags == None:
 					yield "%i | Skipping [%s].\n" % (int(time.time()), name)
 					continue
