@@ -23,6 +23,9 @@ class File(dict, object):
 		self._load(filename)
 
 	def _info(self, metadata, file):
+		if "title" not in metadata or metadata["title"] is None or len(metadata["title"].strip()) == 0:
+			metadata["title"] = os.path.splitext(os.path.basename(self["filename"]))[0]
+
 		self.update(metadata)
 
 		for mimetype in file.mime:

@@ -52,7 +52,7 @@ def query(query):
  
 	songs = []
 	for song in query:
-		if len(song.title.strip()) == 0:
+		if song.title is None or len(song.title.strip()) == 0:
 			song.title = "Untitled Song"
 		if song.track == 0:
 			song.track = None

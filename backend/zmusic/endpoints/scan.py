@@ -2,6 +2,7 @@ from zmusic.login import admin_required
 from zmusic import app, db
 from zmusic.database import Song
 from zmusic.picard.formats import open as readtags
+from zmusic.picard.util import encode_filename
 from flask import Response
 import time
 import os
@@ -13,11 +14,11 @@ def scan_music():
 	def do_scan():
 		yield "%i | Begin.\n" % int(time.time())
 		all_files = {}
-		for root, dirs, files in os.walk(app.config["MUSIC_PATH"]):
+		for root, dirs, files in os.walk(unicode(app.config["MUSIC_PATH"])):
 			if len(files) != 0:
-				yield "%i | Scanning [%s].\n" % (int(time.time()), root)
+				yield "%i | Scanning [%s].\n" % (int(time.time()), encode_filename(root))
 			for name in files:
-				name = os.path.join(root, name)
+				name = encode_filename(os.path.join(root, name))
 				all_files[name] = True
 				song = Song.query.get(name)
 				if song != None:
@@ -35,11 +36,11 @@ def scan_music():
 					continue
 				song.sync_picard(tags)
 				db.session.add(song)
-				yield "%i | Adding [%s].\n" % (int(time.time()), song.filename)
+				yield "%i | Adding [%s].\n" % (int(time.time()), encode_filename(song.filename))
 		for song in db.session.query(Song.filename):
 			if song.filename not in all_files:
 				Song.query.filter(Song.filename == song.filename).delete(False)
-				yield "%i | Removing [%s].\n" % (int(time.time()), str(song.filename))
+				yield "%i | Removing [%s].\n" % (int(time.time()), encode_filename(song.filename))
 		db.session.commit()
 		yield "%i | Done.\n" % int(time.time())
 	response = Response(do_scan(), mimetype="text/plain", direct_passthrough=True)
