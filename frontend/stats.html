@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<!--
+
+So... What the hell is this?
+
+Well, after the bootstrappy backboney beauty of the music player, I figured the
+statistics page should be a real abomination. We combine HTML3's <center> tag
+with CSS3's nth-child selectors. We concat html in plain javascript strings while
+parsing JSON using brand new browser built-ins. We use javascript alert boxes
+beside fancy unicode zero width space html entities (how many of you knew that
+existed!). There are two closing punctuation marks in that last sentence, but an
+HTML5 doctype at the beginning of this page. Indeed, many kittens are harmed in
+the process; God save us.
+
+But hey, at least it's not Comic Sans, right?
+
+
+Problem, officer? Send me a patch.
+
+- Jason
+
+-->
+
+<html>
+<head>
+<title>ZX2C4 Music - Logs</title>
+<style>
+body {
+	font-family: "Trebuchet MS", sans-serif;
+	background-color: white;
+	color: black;
+}
+a {
+	text-decoration: inherit;
+	color: inherit;
+}
+select {
+	font-family: inherit;
+	font-size: 1.5em;
+	margin-bottom: .75em;
+}
+table {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+td {
+	border-bottom: 1px solid black;
+	border-top: 1px solid black;
+}
+th:last-child, td:last-child {
+	border-right: 1px solid black;
+}
+th:first-child, td:first-child {
+	border-left: 1px solid black;
+}
+td:first-child {
+	font-size: .8em;
+}
+td:nth-child(5), td:nth-child(6), th~td {
+	font-size: .5em;
+}
+.zip td {
+	border-bottom: 0;
+	border-top: 0;
+}
+</style>
+<script type="text/javascript">
+function loadIps() {
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 2 && xhr.status == 403) {
+			alert("You must be logged in as an administrative user to view this page.\n\nAfter you're logged out, go to the main music page, and login with the admin creds.");
+			window.location = "logout";
+			return;
+		}
+		if (xhr.readyState != 4)
+			return;
+		var ips = JSON.parse(xhr.response).downloaders;
+		var html = "";
+		for (var i = 0; i < ips.length; ++i)
+			html += "<option value=\"" + ips[i].ip + "\">" + ips[i].ip + (ips[i].host == null ? "" : (" (" + ips[i].host + ")")) + "</option>";
+		var ips = document.getElementById("ips");
+		ips.innerHTML = html;
+		ips.onchange = function() {
+			loadDownloads(this.value);
+		};
+		ips.onchange();
+	};
+	xhr.open("GET", "stats");
+	xhr.send();
+}
+function loadDownloads(ip) {
+	document.getElementById("downloads").innerHTML = "Loading...";
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState != 4)
+			return;
+		var downloads = JSON.parse(xhr.response).downloads;
+		var prettyHash = function(hash) {
+			var out = "";
+			for (var i = 0; i < hash.length; ++i) {
+				out += hash[i];
+				if (i % 4 == 0)
+					out += "&#8203;";
+			}
+			return out;
+		};
+		var songRow = function(song, zip) {
+			var linkItem = function(item) {
+				if (song[item] == null)
+					return "<td></td>";
+				return "<td><a href=index.html?query=" + item + ":\"" + encodeURIComponent(song[item].replace(/"/g, "\\\"")) + "\">" + (item == "id" ? prettyHash(song[item]) : song[item]) + "</a></td>";
+			};
+			return "<td>" + (zip ? "" : (new Date(song.time / 100)).toLocaleString()) + "</td>" + linkItem("artist") + linkItem("album") + linkItem("title") + linkItem("id") + "<td>" + (zip ? "" : song.useragent) + "</td>";
+		};
+		var html = "<table><thead><tr><th>Date</th><th>Artist</th><th>Album</th><th>Title</th><th>ID</th><th>User Agent</th></tr></thead><tbody>";
+		for (var i = 0; i < downloads.length; ++i) {
+			if (downloads[i].song)
+				html += "<tr>" + songRow(downloads[i].song, false) + "</tr>";
+			if (downloads[i].zip) {
+				html += "<tr class=\"zip\"><td>" + (new Date(downloads[i].zip[0].time / 100)).toLocaleString() + "</td><th colspan=\"4\">Zip Download</th><td>" + downloads[i].zip[0].useragent + "</td></tr>";
+				for (var j = 0; j < downloads[i].zip.length; ++j)
+					html += "<tr class=\"zip\">" + songRow(downloads[i].zip[j], true) + "</tr>";
+			}
+		}
+		html += "</tbody></table>";
+		document.getElementById("downloads").innerHTML = html;
+	};
+	xhr.open("GET", "stats/" + ip);
+	xhr.send();
+}
+window.addEventListener("DOMContentLoaded", loadIps);
+</script>
+</head>
+<body>
+<center><select id="ips"><option>Loading...</option></select></center>
+<div id="downloads"></div>
+</body>
+</html>
