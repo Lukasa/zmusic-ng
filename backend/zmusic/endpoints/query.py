@@ -6,7 +6,7 @@ import shlex
 
 @app.route('/query', defaults={ "query": "" })
 @app.route('/query/', defaults={ "query": "" })
-@app.route('/query/<query>')
+@app.route('/query/<path:query>')
 @login_required
 def query(query):
 	offset = request.args.get("offset", 0, int)
