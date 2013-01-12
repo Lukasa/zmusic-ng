@@ -44,6 +44,11 @@
 	cursor: pointer;
 	color: #555555;
 	display: none;
+	transition:.4s;
+	-o-transition:.4s;
+	-ms-transition:.4s;
+	-moz-transition:.4s;
+	-webkit-transition:.4s;
 }
 #loadall:hover {
 	color: #000000;
@@ -153,12 +158,24 @@
 .remove {
 	opacity: 0.8;
 	filter: alpha(opacity=80);
+	transition:.4s;
+	-o-transition:.4s;
+	-ms-transition:.4s;
+	-moz-transition:.4s;
+	-webkit-transition:.4s;
 }
 .remove:hover {
 	opacity: 1;
 	filter: alpha(opacity=100);
 	cursor: pointer;
 	text-decoration: none;
+}
+.table-hover tbody tr td, .table-hover tbody tr th {
+	transition:.4s;
+	-o-transition:.4s;
+	-ms-transition:.4s;
+	-moz-transition:.4s;
+	-webkit-transition:.4s;
 }
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
 	background-color: #d9edf7;
