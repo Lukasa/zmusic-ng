@@ -35,6 +35,19 @@
 	font-size: 150px;
 	margin-top: 10%;
 }
+#loadall {
+	font-size: 20px;
+	position: absolute;
+	bottom: 100px;
+	right: 0;
+	padding-right: 1px;
+	cursor: pointer;
+	color: #555555;
+	display: none;
+}
+#loadall:hover {
+	color: #000000;
+}
 #login {
 	position: absolute;
 	top: 0;

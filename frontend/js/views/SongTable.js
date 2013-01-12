@@ -1,7 +1,7 @@
 var SongTable = Backbone.View.extend({
 	initialize: function() {
 		var that = this;
-		_(this).bindAll("remove", "render", "renderMore", "appendSong");
+		_(this).bindAll("remove", "render", "renderMore", "appendSong", "showHideLoadall");
 
 		this.$songlistContainer = this.$el.find("#songlist-container");
 		this.$tbody = this.$songlistContainer.find("tbody");
@@ -27,6 +27,10 @@ var SongTable = Backbone.View.extend({
 				clearTimeout(latestSearchTimer);
 			latestSearchTimer = setTimeout(doSearch, 350);
 		});
+		this.$loadall = this.$el.find("#loadall").click(function() {
+			that.$loadall.fadeOut();
+			that.collection.more({ limit: 0 });
+		});
 
 		this.listenTo(this.collection, "remove", this.remove);
 		this.listenTo(this.collection, "reset", this.render);
@@ -50,10 +54,18 @@ var SongTable = Backbone.View.extend({
 		this.$tbody.empty().scrollTop(0);
 		this.songRows = {};
 		this.collection.each(this.appendSong);
+		this.showHideLoadall();
 		return this;
 	},
 	renderMore: function(more) {
 		more.each(this.appendSong);
+		this.showHideLoadall();
+	},
+	showHideLoadall: function() {
+		if (this.collection.hasMore() && !this.$loadall.is(":visible"))
+			this.$loadall.fadeIn();
+		else if (!this.collection.hasMore() && this.$loadall.is(":visible"))
+			this.$loadall.fadeOut();
 	},
 	scrollTo: function(song) {
 		var that = this;
