@@ -40,7 +40,7 @@ $(function() {
 				       "Keith Jarret", "Kurt Rosenwinkel", "Gould", "Segovia",
 				       "Mike Stern", "John Coltrane", "McCoy Tyner",
 				       "BADBADNOTGOOD", "Charles Mingus", "Tribe Called Quest",
-				       "Lord of the Rings", "Pat Metheny" ];
+				       "Lord of the Rings", "Pat Metheny", "Fugazi" ];
 		$("#query").val(qParam("query") || defaultChoices[Math.floor(Math.random() * defaultChoices.length)]).change();
 	};
 
