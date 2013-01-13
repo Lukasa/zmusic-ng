@@ -154,6 +154,10 @@
 }
 .btn-progress .bar {
 	padding-top: 5px;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 }
 .remove {
 	opacity: 0.8;
