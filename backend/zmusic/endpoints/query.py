@@ -45,11 +45,13 @@ def query(query):
 	if filter_chain is not None:
 		query = query.filter(filter_chain)
 	total = query.count()
-	query = query.order_by(Song.artist).order_by(Song.year).order_by(Song.album).order_by(Song.disc).order_by(Song.track).order_by(Song.title)
+	query = (query.order_by(Song.album).order_by(Song.disc)
+		          .order_by(Song.track).order_by(Song.artist)
+		          .order_by(Song.title).order_by(Song.year))
 	query = query.offset(offset)
 	if limit != None:
 		query = query.limit(limit)
- 
+
 	songs = []
 	for song in query:
 		if song.title is None or len(song.title.strip()) == 0:
