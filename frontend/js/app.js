@@ -35,12 +35,9 @@ $(function() {
 					loadSong();
 			});
 		}
-		var defaultChoices = [ "Wayne Shorter", "Bill Frisell", "Jimi Hendrix",
-				       "Allan Holdsworth", "Miles Davis", "Bill Evans",
-				       "Keith Jarret", "Kurt Rosenwinkel", "Gould", "Segovia",
-				       "Mike Stern", "John Coltrane", "McCoy Tyner",
-				       "BADBADNOTGOOD", "Charles Mingus", "Tribe Called Quest",
-				       "Lord of the Rings", "Pat Metheny", "Fugazi" ];
+		var defaultChoices = [ "Dire Straits", "Paramore", "Barenaked Ladies",
+							   "Roy Buchanan", "Johnny Cash", "Kirsty MacColl",
+							   "Counting Crows", "Tracy Chapman"];
 		$("#query").val(qParam("query") || defaultChoices[Math.floor(Math.random() * defaultChoices.length)]).change();
 	};
 
@@ -78,5 +75,5 @@ $(function() {
 		$.ajax("login", { type: "POST", data: { "username": qParam("username"), "password": qParam("password") } }).success(processLogin);
 	else
 		$.ajax("login").success(processLogin);
-		
+
 });
